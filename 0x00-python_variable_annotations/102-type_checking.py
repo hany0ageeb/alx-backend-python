@@ -8,7 +8,7 @@ from typing import List, Sequence, Any
 
 def zoom_array(lst: Sequence, factor: int = 2) -> List:
     """
-    function zoom_array
+    function zoom_array zoom array
     """
     zoomed_in: List[int] = [
         item for item in lst
