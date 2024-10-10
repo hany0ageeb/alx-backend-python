@@ -3,10 +3,10 @@
 Use mypy to validate the following piece of code
 and apply any necessary changes.
 """
-from typing import List, Sequence, Any
+from typing import List, Sequence, Any, Tuple
 
 
-def zoom_array(lst: Sequence, factor: int = 2) -> List:
+def zoom_array(lst: Tuple, factor: int = 2) -> List:
     """
     function zoom_array zoom array
     """
@@ -17,7 +17,7 @@ def zoom_array(lst: Sequence, factor: int = 2) -> List:
     return zoomed_in
 
 
-array = [12, 72, 91]
+array = (12, 72, 91)
 
 zoom_2x = zoom_array(array)
 
