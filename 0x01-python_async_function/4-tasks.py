@@ -16,6 +16,6 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
     code is nearly identical to wait_n except task_wait_random is being called
     """
     tasks: List[asyncio.Task] = [task_wait_random(max_delay) for i in range(n)]
-    l: List[float] = await asyncio.gather(*tasks)
-    l = sorted(l)
-    return l
+    result: List[float] = await asyncio.gather(*tasks)
+    result = sorted(result)
+    return result
