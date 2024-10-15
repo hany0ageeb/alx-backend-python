@@ -10,8 +10,7 @@ Use the time module to measure an approximate elapsed time.
 import typing
 import asyncio
 
-wait_n: typing.Callable[[int, int], typing.List[float]
-                        ] = __import__('1-concurrent_coroutines').wait_n
+wait_n = __import__('1-concurrent_coroutines').wait_n
 
 
 def measure_time(n: int, max_delay: int) -> float:
