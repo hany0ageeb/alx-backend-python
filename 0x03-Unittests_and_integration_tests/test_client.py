@@ -31,5 +31,21 @@ class TestGithubOrgClient(unittest.TestCase):
                    new_callable=PropertyMock) as mock_org:
             mock_org.return_value = dict({'repos_url': 'pla pla pla'})
             x = GithubOrgClient('google')
-            # print(x.org)
             self.assertEqual(x._public_repos_url, 'pla pla pla')
+
+    @patch('client.get_json')
+    def test_public_repos(self, mocked_get_json):
+        """test_public_repos
+        """
+        r_val = list()
+        r_val.append(dict((("name", "truth"),)))
+        r_val.append(dict((("name", "ruby-openid-apps-discovery"),)))
+        mocked_get_json.return_value = r_val
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as m:
+            m.return_value = 'https://api.github.com/orgs/google/repos'
+            obj = GithubOrgClient('google')
+            result = obj.public_repos()
+            self.assertEqual(result, ["truth", "ruby-openid-apps-discovery"])
+            m.assert_called_once()
+            mocked_get_json.assert_called_once()
