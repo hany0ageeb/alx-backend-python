@@ -49,3 +49,13 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result, ["truth", "ruby-openid-apps-discovery"])
             m.assert_called_once()
             mocked_get_json.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        """test_has_license
+        """
+        self.assertEqual(GithubOrgClient.has_license(
+            repo, license_key), expected)
