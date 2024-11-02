@@ -3,9 +3,10 @@
 """
 import unittest
 import unittest.mock
-from parameterized import parameterized
-from unittest.mock import patch, PropertyMock
+from parameterized import parameterized, parameterized_class
+from unittest.mock import patch, PropertyMock, Mock
 from client import GithubOrgClient
+import fixtures
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -59,3 +60,54 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         self.assertEqual(GithubOrgClient.has_license(
             repo, license_key), expected)
+
+
+@parameterized_class((
+    "org_payload",
+    "repos_payload",
+    "expected_repos",
+    "apache2_repos"),
+    [
+    (
+        fixtures.TEST_PAYLOAD[0][0],
+        fixtures.TEST_PAYLOAD[0][1],
+        fixtures.TEST_PAYLOAD[0][2],
+        fixtures.TEST_PAYLOAD[0][3])
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """TestIntegrationGithubOrgClient
+    """
+    @classmethod
+    def setUpClass(cls):
+        """setUpClass
+        """
+        def moc_get(url: str):
+            pay_load = Mock()
+            if url == 'https://api.github.com/orgs/google':
+                pay_load.json.return_value = cls.org_payload
+            elif url == 'https://api.github.com/orgs/google/repos':
+                pay_load.json.return_value = cls.repos_payload
+            return pay_load
+        cls.get_patcher = patch('requests.get').start()
+        cls.get_patcher.side_effect = moc_get
+
+    @classmethod
+    def tearDownClass(cls):
+        """tearDownClass
+        """
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """test_public_repos
+        """
+        # setup
+        client = GithubOrgClient('google')
+        result = client.public_repos()
+        self.assertEqual(result, self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """test_public_repos_with_license
+        """
+        client = GithubOrgClient('google')
+        result = client.public_repos(license='apache-2.0')
+        self.assertEqual(result, self.apache2_repos)
